@@ -1,0 +1,59 @@
+        
+%      Original_data=0.9*sin((1:10000)/19);
+     Original_data=random('Normal',0.1,0.3,1,10000);
+     Original_data(2,:)=zeros(1,10000);
+     Original_data(3,:)=zeros(1,10000);
+    
+     rand1=random('Normal',0,0.1,1,length(Original_data));
+     rand2=random('Normal',0,0.2,1,length(Original_data));
+
+    for i=13:length(Original_data)
+        Original_data(2,i)=Original_data(1,i-12)+rand1(i);
+    end        
+   
+    
+    for i=3:length(Original_data)
+        Original_data(3,i-2)=Original_data(2,i-2)+rand2(i);
+    end        
+    
+    
+    
+    fs=1000;fre_band=[0;250];NFFT=512;MORDER_band=[1;20];
+    for i=1:3
+        for j=i:3
+            if i~=j
+               Temp=causality_try1to1(Original_data(i:j,:),fre_band,fs,NFFT,MORDER_band);
+               C_uncondition(i,j).C=Temp.Fx2y;
+               C_uncondition(j,i).C=Temp.Fy2x;
+               Fre=Temp.F;
+           end
+       end
+   end
+   
+   
+   
+  for i=1:3
+      for j=1:3
+            if i~=j
+               Data(1,:)=Original_data(j,:);Data(2,:)=Original_data(i,:);Data(3,:)=Original_data(setdiff([1:3],[i,j]),:);
+               Temp=causality_try_condition(Data,fre_band,fs,NFFT,MORDER_band);
+               C_condition(i,j).C=Temp.F2to1;
+               Fre=Temp.F;
+           end
+       end
+   end
+   
+   
+  for i=1:3
+      for j=1:3
+            if i~=j
+            subplot(3,3,(i-1)*i+j);plot(Fre,C_uncondition(i,j).C);hold on;plot(Fre,C_condition(i,j).C,'r')    
+            end
+       end
+   end
+   
+
+   
+
+   
+   

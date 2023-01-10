@@ -1,0 +1,18 @@
+function S COH =kal2spec(kal,channel_num,p,NFFT,Fs)
+%%%%kal is the result from [kal,e,Kalman,Q2] = mvaar(y,p,UC,mode,Kalman)
+Duration=length(kal(1,:));
+T=channel_num*p;
+for t=1:length(Duration)
+    for i=1:channel_num
+        temp=kal(t,((i-1)*T+1):(i*T));
+        A{t}(i,:)=temp;
+    end
+A{t}=[eye(p) -A{t}];
+[S{t},h{t},PDC{t},COH{t},DTF{t},DC{t},pCOH{t},dDTF{t},ffDTF{t}, pCOH2{t}, PDCF{t}, coh{t},GGC{t},Af{t},GPDC{t},GGC2{t}]=mvfreqz(B,A{t},C,NFFT,Fs)
+end
+
+
+
+
+
+

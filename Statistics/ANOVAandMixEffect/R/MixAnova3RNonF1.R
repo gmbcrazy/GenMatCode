@@ -1,0 +1,12 @@
+rm(list=ls())
+library(R.matlab)
+Temp1=readMat("C:/Users/lzhang481/ToolboxAndScript/MyGenMat/Statistics/ANOVAandMixEffect/R/R_MixAnova3.mat");
+DataAnova=unlist(Temp1$Data);
+g1=(unlist(Temp1$Dependent[,1]));
+g2=(unlist(Temp1$Dependent[,2]));
+gS=factor(unlist(Temp1$Dependent[,3]));
+
+
+Data.Anova<-data.frame(rt=as.vector(DataAnova),gS,g1,g2)
+A=summary(aov(rt ~ g1*g2+ Error(gS/(g1*g2)), data=Data.Anova));
+sink("C:/Users/lzhang481/ToolboxAndScript/MyGenMat/Statistics/ANOVAandMixEffect/R/mixANOVA3-RepeatedMeasures.txt");print(A);sink(); 

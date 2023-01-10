@@ -1,0 +1,85 @@
+clear;
+path_filename='E:\research\my paper nature\paper in GPZ\lab02-xk128-103005005-f.nex';  % timerange=[240;270]; 
+%path_filename='E:\data\1-1121\nex_1\1121-05-003-f.nex';                           % timerange=[50;80]; AD23_ad_000 AD23theta_ad_000
+%path_filename='E:\data\3-lab04\nex_1\lab04-24-122706005-f.nex';                 % timerange=[1600;1630]; 
+%path_filename='E:\data\4-lab01\nex_1\lab01-47-111406006-f.nex';                % timerange=[640;670]; 
+%path_filename='E:\data\4-lab01\nex_1\lab01-47-111406007-f.nex'; 
+
+%path_filename='F:\paper\data\fig2\lab04-niu405-160608000-f.nex';%600гн660 sig05 sig49 AD 09  160гн220
+
+
+timerange=[390;420];
+data_name(1).Name='scsig053ats';            %data of firing rate
+data_name(2).Name='AD27_ad_000';            %data of psd
+%data_name(2).Name='scsig053ats';           %data of firing rate
+ref_name='AD27ripple_ad_000';
+
+fre_band=[0;250];
+%%%%%%%%%PSD
+NFFT=2048;
+hanning_length=1024;
+%theta_band=[4 12];
+theta_band=[100 200];
+%%%%36 bins in a theta circle;
+phase_bin_num=72;                       
+%%%%%%%%%%%firing rate start
+
+
+%%%%%%%%%%%ripple phase start
+phase_data=cicular_common_paper_ripple(path_filename,data_name(1).Name,ref_name,timerange,0);
+[prefer,mean_length,level,P,k]=phase_lock_comput(phase_data.Data);
+[density,phase_sample]=phase_fit(k,phase_bin_num,prefer);
+[peak_phase_probability,n]=max(density(1:phase_bin_num));
+peak_phase_probability
+prefer
+P
+peak_phase=phase_sample(n)
+
+figure;
+p=plot(phase_sample,density,'Marker','o');                                         
+set(get(p,'parent'),'position',[0.04 0.04 0.94 0.94],'box','off');
+set(gca,'xlim',[0 720],'box','off','xtick',[0:90:720],'ylim',[0 0.5]);
+set(get(gca,'parent'),'color',[1 1 1],'paperunits','centimeters','paperposition',[0 0 3.08 3.04]);      %graph is 3.08 centimeters long and 3.04 centimeters high;
+%%%%%%%%%%%ripple phase end
+
+NFFT=2048;
+hanning_length=512;
+%%%%%%%%%%%coherence start
+[data1,time1]=rate_historam(path_filename,data_name(1).Name,timerange,0.001,0.001);
+[data2,time2]=rate_historam(path_filename,data_name(2).Name,timerange,0.001,0.001);
+[coh,f_coh]=cohere(data1,data2,NFFT,1000,hanning_length,0,'linear');
+[coh_max,n]=max(coh(find(f_coh>theta_band(1)&f_coh<theta_band(2))));
+f_need=f_coh(find(f_coh>theta_band(1)&f_coh<theta_band(2)));
+peak_f_coh=f_need(n)
+coh_max
+
+figure;
+p=plot(f_coh,coh);                                         
+set(get(p,'parent'),'position',[0.04 0.04 0.94 0.94],'box','off');
+set(gca,'xlim',fre_band,'ylim',[0 1],'box','off');
+set(get(gca,'parent'),'color',[1 1 1],'paperunits','centimeters','paperposition',[0 0 3.08 3.04]);      %graph is 18.81 centimeters long and 2.03 centimeters high;
+%%%%%%%%%%%coherence end
+
+
+NFFT=512;
+MORDER_band=[80;80];
+%%%%%%%%%%%causality start
+cau_data=Causality_one2one(path_filename,data_name,timerange,MORDER_band,NFFT,fre_band,1000);
+[cau_max,n]=max(cau_data.F1to2(find(cau_data.F>theta_band(1)&cau_data.F<theta_band(2))));
+f_need=cau_data.F(find(cau_data.F>theta_band(1)&cau_data.F<theta_band(2)));
+peak_cau_F=f_need(n)
+cau_max
+
+[cau_max,n]=max(cau_data.F2to1(find(cau_data.F>theta_band(1)&cau_data.F<theta_band(2))));
+f_need=cau_data.F(find(cau_data.F>theta_band(1)&cau_data.F<theta_band(2)));
+peak_cau_F=f_need(n)
+cau_max
+
+figure;
+p=plot(cau_data.F,cau_data.F1to2,cau_data.F,cau_data.F2to1);  
+set(get(p(1),'parent'),'position',[0.04 0.04 0.94 0.94],'box','off');
+set(gca,'xlim',fre_band,'box','off');
+set(get(gca,'parent'),'color',[1 1 1],'paperunits','centimeters','paperposition',[0 0 3.08 3.04]);      %graph is 18.81 centimeters long and 2.03 centimeters high;
+%%%%%%%%%%%causality end
+
+

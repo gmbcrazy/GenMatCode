@@ -1,0 +1,35 @@
+function [spec,f]=mode2spec(A,B,f,error,freq)
+
+
+%%%%%%y=a(1)y(k-1)+...+a(p)y(k-p)+x(k)+b(1)x(k-1)+...+b(q)x(k-q);
+if ~isempty(b)
+    for i=1:length(f)
+        spec(i,1)=error*(1+sum(b.*exp(-[1:length(b)]*2*pi*f(i)*j/freq)))/(1-sum(a.*exp(-[1:length(a)]*2*pi*f(i)*j/freq)));
+    end
+else
+%     for i=1:length(f)
+%         spec(i,1)=error/(1-sum(a.*exp(-[1:length(a)]*2*pi*f(i)*j/freq)));
+%     end
+
+[K1,K2] = size(A);
+N = length(f);
+s = exp(i*2*pi*f/Fs);
+z = i*2*pi/Fs;
+S=zeros(K1,K1,N);
+h=zeros(K1,K1,N);
+
+for n=1:N,
+        atmp = zeros(K1);
+        for k = 1:p+1,
+                atmp = atmp + A(:,k*K1+(1-K1:0))*exp(z*(k-1)*f(n));
+        end;   
+        
+        % compensation of instantaneous correlation 
+        % atmp = iD*atmp*D;
+        
+   
+            S(:,:,n)  = h(:,:,n)*C*h(:,:,n)'/Fs;        
+
+end
+
+

@@ -1,0 +1,44 @@
+
+R version 3.5.0 (2018-04-23) -- "Joy in Playing"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> rm(list=ls())
+> library(R.matlab)
+R.matlab v3.6.1 (2016-10-19) successfully loaded. See ?R.matlab for help.
+
+Attaching package: 'R.matlab'
+
+The following objects are masked from 'package:base':
+
+    getOption, isOpen
+
+> Temp1=readMat("C:/Users/lzhang481/ToolboxAndScript/my program/normal/Workingtemp/R_RepAnova3.mat");
+> DataAnova=unlist(Temp1$Data);
+> g1=factor(unlist(Temp1$Dependent[,1]));
+> g2=factor(unlist(Temp1$Dependent[,2]));
+> g3=factor(unlist(Temp1$Dependent[,3]));
+> gS=factor(unlist(Temp1$Dependent[,4]));
+> Data.Anova<-data.frame(rt=as.vector(DataAnova),gS,g1,g2,g3)
+> A=summary(aov(rt ~ g1*g2*g3+ Error(gS/(g1*g2*g3)), data=Data.Anova));
+> sink("C:/Users/lzhang481/ToolboxAndScript/my program/normal/Workingtemp/RepANOVA3.txt");print(A);sink();
+> 
+> proc.time()
+   user  system elapsed 
+   0.26    0.03    0.25 
