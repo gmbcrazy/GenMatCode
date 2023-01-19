@@ -97,7 +97,7 @@ end
         % Note: (Sxy1+Sxy2)/(Sxx1+Sxx2) != (Sxy1/Sxy2) + (Sxx1/Sxx2)
         % ie, we can't push the computation of Cxy into computeperiodogram.
         Sxy = zeros(options.nfft,k); % Initialize
-        Syy = zeros(options.nfft,1); % Initialize
+        Syy = zeros(options.nfft,k); % Initialize
         for i = 1:k,
             temp1=detrend(x(xStart(i):xEnd(i)));  
             temp1=x(xStart(i):xEnd(i));

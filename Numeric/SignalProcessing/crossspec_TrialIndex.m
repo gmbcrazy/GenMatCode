@@ -19,6 +19,7 @@ if isempty(TrialIndex)
    Data.Pxy=[];
    Data.Cxy=[];
    Data.Fre=[];
+   Data.wpli=[];
    return
 end
 
@@ -31,34 +32,37 @@ if length(gpuDevice)>=1
    TPxy=gpuArray(TPxy);
 end
 
+ns=size(TPxy);
 
 if length(TrialIndex)>1
-Data.Pxx=nanmean(TPxx);
-Data.Pxy=nanmean(TPxy);
-Data.Pyy=nanmean(TPyy);
+Data.Pxx=nanmean(nanmean(TPxx,3),length(ns));
+Data.Pxy=nanmean(nanmean(TPxy,3),length(ns));
+Data.Pyy=nanmean(nanmean(TPyy,3),length(ns));
 elseif length(TrialIndex)==1
-   Data.Pxx=(TPxx);
-   Data.Pxy=(TPxy);
-   Data.Pyy=(TPyy);
+Data.Pxx=nanmean(TPxx,length(ns));
+Data.Pxy=nanmean(TPxy,length(ns));
+Data.Pyy=nanmean(TPyy,length(ns));
 else
     
 end
 esttype='mscohere';
 
 for itrial=1:length(TrialIndex)
-[TTPxx,f,xunits] = computepsd(TPxx(itrial,:,:),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
-[TTPyy,f,xunits] = computepsd(TPyy(itrial,:,:),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
-[TTPxy,f,xunits] = computepsd(TPxy(itrial,:,:),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
+[TTPxx(itrial,:,:),f,xunits] = computepsd(squeeze(TPxx(itrial,:,:)),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
+[TTPyy(itrial,:,:),f,xunits] = computepsd(squeeze(TPyy(itrial,:,:)),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
+[TTPxy(itrial,:,:),f,xunits] = computepsd(squeeze(TPxy(itrial,:,:)),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
 end
 
+wpli=cross3DSpec2wpli1D(TTPxy);
+
 if length(TrialIndex)>1
-Data.Pxx=nanmean(nanmean(TPxx,3),1);
-Data.Pyy=nanmean(nanmean(TPyy,3),1);
-Data.Pxy=nanmean(nanmean(TPxy,3),1);
+Data.Pxx=nanmean(nanmean(TTPxx,3),1);
+Data.Pyy=nanmean(nanmean(TTPyy,3),1);
+Data.Pxy=nanmean(nanmean(TTPxy,3),1);
 elseif length(TrialIndex)==1
-Data.Pxx=nanmean(TPxx,3);
-Data.Pyy=nanmean(TPyy,3);
-Data.Pxy=nanmean(TPxy,3);
+Data.Pxx=nanmean(TTPxx,3);
+Data.Pyy=nanmean(TTPyy,3);
+Data.Pxy=nanmean(TTPxy,3);
 else
     
 end
@@ -66,6 +70,7 @@ end
 
 
 Data.Cxy = (abs(Data.Pxy).^2)./(Data.Pxx.*Data.Pyy); % Cxy
+Data.wpli=wpli;
 Data.Fre=f;
 
 
@@ -74,7 +79,7 @@ function wpli=cross3DSpec2wpli1D(inputCrossSpec)
 
 %%%%%%%inputCrossSpec is cross-spectrum, 3D matrix, Trial x Frequency x Timewindow.
   inputdata    = imag(inputCrossSpec);          % make everything imaginary
-  siz = [ size(inputdata) 1];
+  siz = [size(inputdata) 1];
 
   n = siz(1);
   if n==1
@@ -86,13 +91,13 @@ function wpli=cross3DSpec2wpli1D(inputCrossSpec)
 %       wpli     = outsum./outsumW; % estimator of E(Im(X))/E(|Im(X)|)
     wpli = reshape(wpli,siz(2:end));
   elseif n>1
-    outsum   = nansum(nansum(inputdata,1),siz(end-1));      % compute the sum; this is 1 x size(2:end)
-    outsumW  = nansum(nansum(abs(inputdata),1),siz(end-1)); % normalization of the WPLI
+    outsum   = nansum(nansum(inputdata,1),length(siz)-1);      % compute the sum; this is 1 x size(2:end)
+    outsumW  = nansum(nansum(abs(inputdata),1),length(siz)-1); % normalization of the WPLI
 %     if debias
-      outssq   = nansum(nansum(inputdata.^2,1),siz(end-1));
-      wpli     = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
+    outssq   = nansum(nansum(inputdata.^2,1),length(siz)-1);
+    wpli     = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
 %       wpli     = outsum./outsumW; % estimator of E(Im(X))/E(|Im(X)|)
-    wpli = reshape(wpli,siz(2:end));
+%     wpli = reshape(wpli,siz(2:end));
    
   else
     wpli=[];

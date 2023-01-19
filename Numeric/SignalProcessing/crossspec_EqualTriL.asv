@@ -106,11 +106,11 @@ end
 % Sxx=Sxx/numTrial;
 % Syy=Syy/numTrial;
 % 
-% % for itrial=1:size(Sxy)
-% % [Pxy,f,xunits] = computepsd(Sxy,w,options.range,options.nfft,options.Fs,esttype);
-% % [Pxx,f,units] = computepsd(Sxx,w,options.range,options.nfft,options.Fs,esttype);
-% % [Pyy,f,xunits] = computepsd(Syy,w,options.range,options.nfft,options.Fs,esttype);
-% % end
+for itrial=1:size(Sxy)
+[Pxy,f,xunits] = computepsd(Sxy,w,options.range,options.nfft,options.Fs,esttype);
+[Pxx,f,units] = computepsd(Sxx,w,options.range,options.nfft,options.Fs,esttype);
+[Pyy,f,xunits] = computepsd(Syy,w,options.range,options.nfft,options.Fs,esttype);
+end
 %  Cxy = (abs(Pxy).^2)./(Pxx.*Pyy); % Cxy
 
 

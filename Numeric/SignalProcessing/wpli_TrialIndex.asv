@@ -30,9 +30,9 @@ if isempty(TrialIndex)
    return
 end
 
-TPxx=TrialSpec.Sxx(TrialIndex,:,:);
-TPyy=TrialSpec.Syy(TrialIndex,:,:);
-TPxy=TrialSpec.Sxy(TrialIndex,:,:);
+TPxx=TrialSpec.Sxx(TrialIndex,:);
+TPyy=TrialSpec.Syy(TrialIndex,:);
+TPxy=TrialSpec.Sxy(TrialIndex,:);
 
 if length(TrialIndex)>1
 Data.Pxx=nanmean(TPxx);
@@ -57,3 +57,23 @@ Data.WPLI = wpli; % weighted phase lag index
 Data.Fre=f;
 
 
+function wpli=Cross2wpli(CrossSpec)
+
+  inputdata=CrossSpec;
+  siz = [ size(inputdata) 1 ];
+  n = siz(1);
+  if n>1
+    inputdata    = imag(inputdata);          % make everything imaginary
+    outsum   = nansum(inputdata,1);      % compute the sum; this is 1 x size(2:end)
+    outsumW  = nansum(abs(inputdata),1); % normalization of the WPLI
+    if debias
+      outssq   = nansum(inputdata.^2,1);
+      wpli     = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
+    else
+      wpli     = outsum./outsumW; % estimator of E(Im(X))/E(|Im(X)|)
+    end
+    wpli = reshape(wpli,siz(2:end));
+  else
+    wpli = NaN(siz(2:end)); % for one observation, we should return NaNs
+    ft_warning('ft_connectivity_wpli:nTrials', 'computation wpli requires >1 trial, returning NaNs');
+  end
