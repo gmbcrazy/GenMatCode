@@ -1,4 +1,4 @@
-function SpherePlot(Center,radius,colorP,nodeSizePercentage)
+function SpherePlot(Center,radius,colorP,nodeSizeWeight)
 
 %%%%plot Sphere at Center, Center(:,1) x axis; Center(:,2)  y axis; Center(:,3) z axis
 theta = linspace(0,2*pi,50);
@@ -8,8 +8,8 @@ if size(colorP,1)==1
    colorP=repmat(colorP,max(size(Center)),1);
 end
 
-if length(nodeSizePercentage)==1
-   nodeSizePercentage=repmat(nodeSizePercentage,max(size(Center)),1);
+if length(nodeSizeWeight)==1
+   nodeSizeWeight=repmat(nodeSizeWeight,max(size(Center)),1);
 end
 
 if size(Center,2)==2
@@ -18,7 +18,7 @@ end
 % [xs,ys,zs] = sph2cart(theta,phi,radius);
 
 for i=1:size(Center,1)
-    [xs,ys,zs] = sph2cart(theta,phi,radius*nodeSizePercentage(i));
+    [xs,ys,zs] = sph2cart(theta,phi,radius*nodeSizeWeight(i));
 
 surf(xs+Center(i,1),ys+Center(i,2),zs+Center(i,3),'facecolor',colorP(i,:),'linestyle','none','facealpha',1);hold on
 %    view(3), camlight, lighting gouraud
