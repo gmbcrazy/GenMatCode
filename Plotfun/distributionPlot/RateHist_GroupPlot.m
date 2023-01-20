@@ -16,7 +16,7 @@ if nargin==4
    end
 
    
-   if Param.statisP==1
+if Param.statisP==1
    if ~isfield(Param,'PlotType')
       Param.PlotType=2;       
    end
@@ -81,7 +81,7 @@ elseif strcmp(Param.SigPlot,'Ttest')
     end
 
 elseif strcmp(Param.SigPlot,'Ranktest')
-    if isfield(Param,'Crit_p')
+       if isfield(Param,'Crit_p')
       crit_p=Param.Crit_p;
        else
     [h, crit_p, adj_p]=fdr_bh(Outstats.ttestP.PpairRank(:),Param.Q,'pdep','yes');
@@ -224,18 +224,18 @@ if isempty(GroupPair)
 end
 
    if isempty(GroupPair.Pair)
-   for i=1:length(x) 
-       for j=(i+1):length(x)
-           GroupPair.Pair=[GroupPair.Pair [i;j]];
-       end
-   end
+%    for i=1:length(x) 
+%        for j=(i+1):length(x)
+%            GroupPair.Pair=[GroupPair.Pair [i;j]];
+%        end
+%    end
       
    end
 
 
-if size(barColor,1)==1
-   barColor=repmat(barColor,length(x),1);
-end
+% if size(barColor,1)==1
+%    barColor=repmat(barColor,length(x),1);
+% end
 
 if (~iscell(y_mean))&&(~isstruct(y_mean))
 
@@ -264,17 +264,17 @@ elseif PlotMode==2||PlotMode==4
         end
 
 elseif PlotMode==3
-       error_area(x,y_mean,y_errorbar,barColor(i,:),0.3,'-',1);hold on;
+       error_area(x,y_mean,y_errorbar,barColor,0.3,'-',1);hold on;
 elseif PlotMode==5
 %         plot(x(i),y_mean(i),'color',barColor(i,:),'linestyle','-','marker',Marker{i},'markersize',5,'markerfacecolor',barFaceColor(i,:));hold on
 %         plot([x(i) x(i)],y_mean(i)+[-y_errorbar(i) y_errorbar(i)],'color',barColor(i,:),'linewidth',1);
-        plot(x,y_mean,'color',barColor(i,:),'linestyle','-','marker',Marker,'linewidth',0.5);
-        plot(x,y_mean-y_errorbar,':','color',(barColor(i,:)),'linewidth',0.2);
-        plot(x,y_mean+y_errorbar,':','color',(barColor(i,:)),'linewidth',0.2);
+        plot(x,y_mean,'color',barColor,'linestyle','-','marker',Marker,'linewidth',0.5);
+        plot(x,y_mean-y_errorbar,':','color',(barColor),'linewidth',0.2);
+        plot(x,y_mean+y_errorbar,':','color',(barColor),'linewidth',0.2);
 elseif PlotMode==6
 %         plot(x(i),y_mean(i),'color',barColor(i,:),'linestyle','-','marker',Marker{i},'markersize',5,'markerfacecolor',barFaceColor(i,:));hold on
 %         plot([x(i) x(i)],y_mean(i)+[-y_errorbar(i) y_errorbar(i)],'color',barColor(i,:),'linewidth',1);
-        plot(x,y_mean,'color',barColor(i,:),'linestyle','-','marker',Marker,'linewidth',0.5);
+        plot(x,y_mean,'color',barColor,'linestyle','-','marker',Marker,'linewidth',0.5);
 % %         plot(x,y_mean-y_errorbar,':','color',(barColor(i,:)),'linewidth',0.2);
 % %         plot(x,y_mean+y_errorbar,':','color',(barColor(i,:)),'linewidth',0.2);
 
@@ -282,7 +282,7 @@ else
     
 end
 
-
+return;
 
 else
     
@@ -397,12 +397,15 @@ else
     
     
     ErrorBarPlotLU(x+deltaX/8,tempMean,tempStd,barColor,PlotMode);hold on;
+    return;
     if ~isfield(GroupPair,'SignY')
        GroupPair.SignY=max(tempMean)+max(tempStd)*1.5;
     end
     if ~isfield(GroupPair,'LimY')
        GroupPair.LimY=[min(tempMean)-max(tempStd)*1.5 max(tempMean)+max(tempStd)*1.5];
     end
+
+    return;
 
     ShowTemp(1,:)='                                                                        ';
   
