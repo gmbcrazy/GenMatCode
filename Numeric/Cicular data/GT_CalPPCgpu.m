@@ -24,18 +24,32 @@ function [ppc2,varargout]=GT_CalPPCgpu(UnitTrial,NphaseParam)
 % % PhaseData=[];
 % % TrialID=[];
 % tic
-
-if length(gpuDevice)>=1
-else
-   [ppc2,varargout]=GT_CalPPC(UnitTrial,NphaseParam);
-end
-
-
 Ntrial=length(UnitTrial);
 TScount=0;
 for iTrial=1:Ntrial
     TScount=TScount+size(UnitTrial(iTrial).Phase,1);
 end
+
+if length(gpuDevice)>=1&&TScount<50000%%%%%%%%%%% GPU memory might not enough for too many data. 
+
+else
+   [ppc2,nonNanCount,TScount]=GT_CalPPC(UnitTrial,NphaseParam);
+   if nargout==2
+      varargout{1}=nonNanCount;
+    elseif nargout==3
+      varargout{1}=nonNanCount;
+      varargout{2}=TScount;
+
+   else
+    
+   end
+   return
+end
+
+
+
+
+
 
 for iTrial=1:Ntrial
 
@@ -93,6 +107,7 @@ for iTrial=1:length(UnitTrial)
     t1=R1*RealImaDataG(I2,1);
     clear R1;
     R2=repmat(RealImaDataG(I1,2),1,length(I2));
+%     R2G=gpuArray(R2);
     t2=R2*RealImaDataG(I2,2);
     clear R2
     SubSum=nansum(t1+t2)/length(I1)/length(I2);
