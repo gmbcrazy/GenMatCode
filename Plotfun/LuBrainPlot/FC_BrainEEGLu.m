@@ -1,5 +1,18 @@
 function FC_BrainEEGLu(ChanPos,AdjWeight,NodeWeight,EdgeTh,NodeTh,EdgeColor,NodeColor,varargin)
 
+x=ChanPos.ColinCoord;
+xstep=(max(x)-min(x))/8;
+xrange=[min(x)-xstep;max(x)+xstep];
+hold on;     
+patch('Vertices',ChanPos.Cortex.vertices,'Faces',ChanPos.Cortex.faces,...
+      'FaceColor',[0.5 0.5 0.5], 'FaceAlpha',0.05,'EdgeAlpha',0);    %%%%%%%%% Plot scalp map %%%%%%%%%
+xlim(xrange(:,1))
+ylim(xrange(:,2))
+zlim(xrange(:,3))
+
+   axis off;
+   view([-90 90]);
+
 if size(AdjWeight,2)==2
    EdgeList=AdjWeight;
 else
@@ -48,37 +61,27 @@ else            %%%%%%%%%Red for positive link, Blue for Negative link
 end
 
 
-x(:,1)=ChanPos.Y;
-x(:,2)=ChanPos.X;
-x(:,3)=ChanPos.Z;
-
-% % if AppNode==1
-% %    x(:,1)=x(:,1)-100; 
-% % end
-% % 
    
-x(:,1)=ChanPos.Y;
-x(:,2)=ChanPos.X;
-x(:,3)=ChanPos.Z;
+% % x(:,1)=ChanPos.Y;
+% % x(:,2)=ChanPos.X;
+% % x(:,3)=ChanPos.Z;
 
-xstep=(max(x)-min(x))/8;
-xrange=[min(x)-xstep;max(x)+xstep];
+
 
 
 N1=x(EdgeList(:,1),:);
 N2=x(EdgeList(:,2),:);
+
 
 hold on;
 for i=1:size(EdgeList,1)
     plot3([N1(i,1) N2(i,1)],[N1(i,2) N2(i,2)],[N1(i,3) N2(i,3)],'color',EdgeColor(i,:),'linewidth',max(1,abs(EdgeList(i,3)))); 
 end
     
+NodeColor=ChanPos.LobColor(ChanPos.LobID(1,:),:);
 NodeBrainEEGLu(ChanPos,Degree,NodeTh,NodeColor);
 
  hold off;
  light;
  
-xlim(xrange(:,1))
-ylim(xrange(:,2))
-zlim(xrange(:,3))
 

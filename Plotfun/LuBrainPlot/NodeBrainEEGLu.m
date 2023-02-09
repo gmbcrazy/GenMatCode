@@ -8,9 +8,12 @@ end
 
 
 
-x(:,1)=ChanPos.Y;
-x(:,2)=ChanPos.X;
-x(:,3)=ChanPos.Z;
+% x(:,1)=ChanPos.Y;
+% x(:,2)=ChanPos.X;
+% x(:,3)=ChanPos.Z;
+
+x=ChanPos.ColinCoord;
+
 
 xstep=(max(x)-min(x))/10;
 xrange=[min(x)-xstep;max(x)+xstep];
