@@ -1,4 +1,4 @@
-function FC_BrainEEGLu(ChanPos,AdjWeight,NodeWeight,Param)
+function FC_BrainEEGLu(ChanPos,AdjWeight,NodeWeight,EdgeTh,NodeTh,Param,EdgeColor,NodeColor,varargin)
 
 %%%%Param, parameter for ploting;
 % % % Param.Corr='Spearman';  %%%Type of correlation, see Matlab function corr for more details
@@ -8,13 +8,8 @@ function FC_BrainEEGLu(ChanPos,AdjWeight,NodeWeight,Param)
 % % % Param.Clim=[-0.6 0.6];    %%%Color Limit for Correlation  
 % % % Param.Title='Pool All Sample'; %%Any title for label the figure
 % % % Param.MarkerSize=8; %%%MarkerSize of scatter
-% % % Param.EdgeColor=[0.6 0.6 0.6]; %%%
-% % % Param.EdgeColor=[0.6 0.6 0.6]; %%%
-% % % Param.EdgeTh; %%%
-% % % Param.NodeTh; %%%
+% % % Param.Title='Pool All Sample'; %%Any title for label the figure
 
-EdgeTh=Param.EdgeTh;
-NodeTh=Param.NodeTh;
 
 
 x=ChanPos.ColinCoord;
@@ -39,9 +34,20 @@ if isempty(EdgeList)
    disp('No Edge Detected');
    return;
 end
-if isfield(Param,'ScaleF')
-   ScaleF=Param.ScaleF;
-   EdgeList(:,3)=EdgeList(:,3)*ScaleF;
+if nargin==8
+   ScaleF=varargin{1};
+   EdgeList(:,3)=EdgeList(:,3)/ScaleF;
+end
+
+
+if isfield(Param,'ColorMap')&&isfield(Param,'Clim')
+Clim=Param.Clim;
+ColorMapC=Param.ColorMap;
+ClimN=size(ColorMapC,1);
+ColorID=1:ClimN;
+[B1,E1]=discretize(Clim,ClimN);
+[ColorM1I,~] = discretize(r,E1);
+Param.EdgeColor=ColorMapC(ColorM1I,:);
 end
 
 
@@ -62,36 +68,32 @@ else
 Degree=NodeWeight;
 end
 
-if isfield(Param,'ColorMap')&&isfield(Param,'Clim')
-Clim=Param.Clim;
-ColorMapC=Param.ColorMap;
-ClimN=size(ColorMapC,1);
-ColorID=1:ClimN;
-[B1,E1]=discretize(Clim,ClimN);
-[ColorM1I,~] = discretize(EdgeList(:,3),E1);
-EdgeColor=ColorMapC(ColorM1I,:);
-else
-    if isfield(Param,'EdgeColor')
+
+if nargin==5
    EdgeColor=varargin{1};
-      if size(EdgeColor,1)==1
-       EdgeColor=repmat(EdgeColor,size(EdgeList,1),1);  
-      end
-   else            %%%%%%%%%Red for positive link, Blue for Negative link
+   if size(EdgeColor,1)==1
+      EdgeColor=repmat(EdgeColor,size(EdgeList,1),1);  
+   end
+else            %%%%%%%%%Red for positive link, Blue for Negative link
    EdgeColor=repmat([0.9 0.1 0.1],size(EdgeList,1),1); 
-      if isempty(EdgeList)
-         return
-      end
-      IndexN=find(EdgeList(:,3)<0);
-      if ~isempty(IndexN)
-         for i=1:length(IndexN)
-             EdgeColor(IndexN(i),:)=[0.1 0.1 0.9];
-         end
-      end
-
+   if isempty(EdgeList)
+      return
+   end
+   IndexN=find(EdgeList(:,3)<0);
+   if ~isempty(IndexN)
+   for i=1:length(IndexN)
+       EdgeColor(IndexN(i),:)=[0.1 0.1 0.9];
+   end
+   end
 end
 
 
-end
+   
+% % x(:,1)=ChanPos.Y;
+% % x(:,2)=ChanPos.X;
+% % x(:,3)=ChanPos.Z;
+
+
 
 
 N1=x(EdgeList(:,1),:);
@@ -106,6 +108,7 @@ end
 NodeColor=ChanPos.LobColor(ChanPos.LobID(1,:),:);
 NodeBrainEEGLu(ChanPos,Degree,NodeTh,NodeColor);
 
-hold off;light;
+ hold off;
+ light;
  
 

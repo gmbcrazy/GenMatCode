@@ -1,5 +1,5 @@
-classdef Violin < handle
-    % Violin creates violin plots for some data
+classdef Violin_half < handle
+    % Violin_half creates half violin plots for some data
     %   A violin plot is an easy to read substitute for a box plot
     %   that replaces the box shape with a kernel density estimate of
     %   the data, and optionally overlays the data points itself.
@@ -47,6 +47,13 @@ classdef Violin < handle
 
     % Copyright (c) 2016, Bastian Bechtold
     % This code is released under the terms of the BSD 3-clause license
+    %
+    % -------------------
+    % edited from the original function 'Violin' to support half violin
+    % plots and make some aesthetic changes
+    % most edits are commented but compare to original function to verify
+    % all changes. 
+    % ALP 11/9/21
 
     properties
         ScatterPlot % scatter plot of the data points
@@ -71,9 +78,9 @@ classdef Violin < handle
     end
 
     methods
-        function obj = Violin(data, pos, varargin)
-            %Violin plots a violin plot of some data at pos
-            %   VIOLIN(DATA, POS) plots a violin at x-position POS for
+        function obj = Violin_half(data, pos, varargin)
+            %Violin_half plots a half violin plot of some data at pos
+            %   VIOLIN(DATA, POS) plots a half violin at x-position POS for
             %   a vector of DATA points.
             %
             %   VIOLIN(..., 'PARAM1', val1, 'PARAM2', val2, ...)
@@ -102,7 +109,25 @@ classdef Violin < handle
             %                    Defaults to false
             %     'ShowMean'     Whether to show mean indicator.
             %                    Defaults to false
-
+            
+            %%% adjust pos for half violins, alp 11/9/21
+            % if input n is odd, plot left side, if even, plot right
+            isOdd = mod(pos,2) == 1;
+            if isOdd
+                shift = -1; 
+            else
+                shift = 1; 
+            end
+            
+            % reset pos to be the desired x value
+            frac = pos/2;
+            pos = ceil(frac); 
+            
+            %make a little space between the violins
+            centervalue = 0.02; %your desired value likely dependent on final size of plot
+            pos = pos + shift*centervalue; 
+            %%% end alp 11/9/21
+            
             args = obj.checkInputs(data, pos, varargin{:});
             data = data(not(isnan(data)));
             if numel(data) == 1
@@ -137,21 +162,26 @@ classdef Violin < handle
             else % all data is identical:
                 jitterstrength = density*width;
             end
-            jitter = 2*(rand(size(data))-0.5);
+%             jitter = 2*(rand(size(data))-0.5); %old
+            jitter = -shift*(rand(size(data))); %for half violins ALP 11/9/21
             obj.ScatterPlot = ...
-                scatter(pos + jitter.*jitterstrength, data, 'filled');
+                scatter([pos + jitter.*jitterstrength], data, 'filled');
 
             % plot the violin
+            % alp 11/9/21 edited to be half violins
+            % getting rid of outline bc prettier without, i think
             obj.ViolinPlot =  ... % plot color will be overwritten later
-                fill([pos+density*width pos-density(end:-1:1)*width], ...
-                     [value value(end:-1:1)], [1 1 1]);
-                   
+                fill([pos*ones(size(density)) pos-shift*density(end:-1:1)*width], ...
+                     [value value(end:-1:1)], [1 1 1], 'LineStyle', 'none');   
+
             % plot the mini-boxplot within the violin
+            shift=1;
+            boxpos = pos+shift*args.BoxWidth; %this keeps the box edge at the violin edge, alp 11/9/21
             quartiles = quantile(data, [0.25, 0.5, 0.75]);         
             obj.BoxPlot = ... % plot color will be overwritten later
-                fill(pos+[-1,1,1,-1]*args.BoxWidth, ...
+                fill(boxpos+[-1,1,1,-1]*args.BoxWidth, ...
                      [quartiles(1) quartiles(1) quartiles(3) quartiles(3)], ...
-                     [1 1 1]);
+                     [1 1 1]); %alp made x value boxpos 11/9/21
                  
             % plot the data mean
             meanValue = mean(data);
@@ -173,9 +203,9 @@ classdef Violin < handle
             hiwhisker = quartiles(3) + 1.5*IQR;
             hiwhisker = min(hiwhisker, max(data(data < hiwhisker)));
             if ~isempty(lowhisker) && ~isempty(hiwhisker)
-                obj.WhiskerPlot = plot([pos pos], [lowhisker hiwhisker]);
+                obj.WhiskerPlot = plot([boxpos boxpos], [lowhisker hiwhisker], 'LineWidth', 1); %box pos so centered on new x axis alp 
             end
-            obj.MedianPlot = scatter(pos, quartiles(2), [], [1 1 1], 'filled');
+            obj.MedianPlot = scatter(boxpos, quartiles(2), [], [1 1 1], 'filled'); %alp 11/9/21 made x value boxpos
 
             obj.NotchPlots = ...
                  scatter(pos, quartiles(2)-1.57*IQR/sqrt(length(data)), ...
@@ -325,7 +355,7 @@ classdef Violin < handle
             p = inputParser();
             p.addRequired('Data', @isnumeric);
             p.addRequired('Pos', isscalarnumber);
-            p.addParameter('Width', 0.3, isscalarnumber);
+            p.addParameter('Width', 0.4, isscalarnumber); %was 0.3
             p.addParameter('Bandwidth', [], isscalarnumber);
             iscolor = @(x) (isnumeric(x) & length(x) == 3);
             p.addParameter('ViolinColor', [], iscolor);
@@ -333,7 +363,7 @@ classdef Violin < handle
             p.addParameter('BoxWidth', 0.01, isscalarnumber);
             p.addParameter('EdgeColor', [0.5 0.5 0.5], iscolor);
             p.addParameter('MedianColor', [1 1 1], iscolor);
-            p.addParameter('ViolinAlpha', 0.3, isscalarnumber);
+            p.addParameter('ViolinAlpha', 0.2, isscalarnumber); %was 0.3
             isscalarlogical = @(x) (islogical(x) & isscalar(x));
             p.addParameter('ShowData', true, isscalarlogical);
             p.addParameter('ShowNotches', false, isscalarlogical);
