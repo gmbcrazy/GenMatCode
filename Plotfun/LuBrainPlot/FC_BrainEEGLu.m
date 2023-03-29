@@ -72,7 +72,7 @@ ColorID=1:ClimN;
 EdgeColor=ColorMapC(ColorM1I,:);
 else
     if isfield(Param,'EdgeColor')
-   EdgeColor=varargin{1};
+       EdgeColor=Param.EdgeColor;
       if size(EdgeColor,1)==1
        EdgeColor=repmat(EdgeColor,size(EdgeList,1),1);  
       end

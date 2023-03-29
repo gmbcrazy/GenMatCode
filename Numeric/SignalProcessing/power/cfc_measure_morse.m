@@ -66,6 +66,8 @@ LOW=min(freqvec_amp)*dt*2*pi;   %%%%%%frequencies in radius
 if length(freqvec_amp)==2
 Frad=morsespace(gamma,beta,HIGH,LOW,D);
 Fre=Frad/2/pi*Fs;
+freqvec_amp=Fre;
+
 elseif length(freqvec_amp)>2
 Frad=morsespace(gamma,beta,HIGH,LOW,D);
 numF=(length(freqvec_amp)-1);
