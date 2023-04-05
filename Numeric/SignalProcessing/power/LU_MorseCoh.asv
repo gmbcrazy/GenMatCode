@@ -51,14 +51,20 @@ elseif nargin==4
 WaveParam=varargin{1};
 WaveParam.samprate=samprate;
 Fband=WaveParam.Fband;
-NSW=WaveParam.NSW;
-NTW=WaveParam.NTW;
-flag_SMOOTH=WaveParam.flag_SMOOTH;
-
+SavePath=[];
+SaveShow=[];
 elseif nargin==5
 WaveParam=varargin{1};
 WaveParam.samprate=samprate;
 Fband=WaveParam.Fband;
+Param=varargin{2};
+   if isfield(Param,'SavePath')
+   SavePath=Param.SavePath;
+   SaveShow=Param.SaveShow;
+   else
+   SavePath=[];
+   SaveShow=[];
+   end
 
 else
     
@@ -138,6 +144,9 @@ LFPtemp2=zscore(decimate(LFP2,WaveParam.DownSample));
 % WaveParam.Fband=WaveParam.Freq;
 % Fband=WaveParam.Fband;
 
+NSW=3;
+NTW=21;
+flag_SMOOTH=1;
 
 cwtS10=wavetrans(LFPtemp1(:),{gamma,beta,Frad});  %%%%Jlab calculation;
 cfs_s1=smoothCFS(abs(cwtS10').^2,flag_SMOOTH,NSW,NTW)';

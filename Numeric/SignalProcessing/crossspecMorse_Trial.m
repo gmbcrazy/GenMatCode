@@ -1,5 +1,5 @@
 
-function Data=crossspec_Trial(TrialSpec)
+function Data=crossspecMorse_Trial(TrialSpec)
 
 %%%%Calculated weighted phase lag index, Averaged Coherence, PSD across trial based different
 %%%%TrialIndex Needed.
@@ -30,25 +30,16 @@ ns=size(TPxy);
 % Data.Pxy=nanmean(TPxy,length(ns));
 % Data.Pyy=nanmean(TPyy,length(ns));
 
-esttype='mscohere';
+Data.Pxx=gather(nanmean(TPxx,3));
+Data.Pyy=gather(nanmean(TPyy,3));
+Data.Pxy=gather(nanmean(TPxy,3));
 
-for itrial=1:ns(1)
-[TTPxx(itrial,:,:),f,xunits] = computepsd(squeeze(TPxx(itrial,:,:)),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
-[TTPyy(itrial,:,:),f,xunits] = computepsd(squeeze(TPyy(itrial,:,:)),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
-[TTPxy(itrial,:,:),f,xunits] = computepsd(squeeze(TPxy(itrial,:,:)),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
-end
-
-
-Data.Pxx=gather(nanmean(TTPxx,3));
-Data.Pyy=gather(nanmean(TTPyy,3));
-Data.Pxy=gather(nanmean(TTPxy,3));
-
-wpli=gather(cross3DSpec2wpli2D(TTPxy));
+wpli=gather(cross3DSpec2wpli2D(TPxy));
 
 
 Data.Cxy = (abs(Data.Pxy).^2)./(Data.Pxx.*Data.Pyy); % Cxy
 Data.wpli=wpli;
-Data.Fre=f;
+Data.Fre=TrialSpec.Fre;
 
 
 
@@ -66,7 +57,7 @@ function wpli=cross3DSpec2wpli2D(inputCrossSpec)
 %     if debias
       outssq   = nansum(inputdata.^2,length(siz)-1);
       wplitemp     = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
-%       wplitemp     = outsum./outsumW; % estimator of E(Im(X))/E(|Im(X)|)
+      wplitemp     = outsum./outsumW; % estimator of E(Im(X))/E(|Im(X)|)
       wpli(itrial,:) = wplitemp;
    
   end
