@@ -4,7 +4,13 @@ if isnan(x)
    y='NAN';
    return
 end
-
+if x>=0
+   
+else
+   y=showNum(abs(x),m);
+   y=['-' y];
+   return
+end
 if size(x,1)>1||size(x,2)>1
    y={size(x)};
 for i=1:size(x,1)
@@ -16,13 +22,7 @@ end
 end
 x=round(x*10^m)/(10^m);
 
-if x>=0
-   
-else
-   y=showNum(abs(x),m);
-   y=['-' y];
-   return
-end
+
 % if (m-1)>0
 %     t='0.';
 %    for i=1:(m-1)
