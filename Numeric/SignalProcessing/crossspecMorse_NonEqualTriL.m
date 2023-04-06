@@ -1,4 +1,4 @@
-function [Sxy,Sxx,Syy,Fre,ValidIndex]=crossspecMorse_EqualTriL(Data1,Data2,samprate,varargin)
+function [Sxy,Sxx,Syy,Fre,ValidIndex]=crossspecMorse_NonEqualTriL(Data1,Data2,samprate,varargin)
 
 %%%%Calculat cross-spectrum of trial data with equal length of duration.
 %%%%Output Sxy, Sxx, Syy is 3D matrix, trial * nfft * window 
@@ -119,9 +119,9 @@ end
 [WCOH,temp1,temp2,temp3,Fre] = LU_MorseCoh(Temp1,Temp2,samprate,WaveParam);
 
 if ~isempty(temp1)
-   Sxy(i,:,:)=temp1';
-   Sxx(i,:,:)=temp2';
-   Syy(i,:,:)=temp3';
+   Sxy{i}=temp1';
+   Sxx{i}=temp2';
+   Syy{i}=temp3';
 else
    ValidIndex(i)=0;
 

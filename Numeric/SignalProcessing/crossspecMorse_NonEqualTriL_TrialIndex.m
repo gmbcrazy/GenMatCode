@@ -1,5 +1,5 @@
 
-function Data=crossspec_NonEqualTriL_TrialIndex(TrialSpec,TrialIndex)
+function Data=crossspecMorse_NonEqualTriL_TrialIndex(TrialSpec,TrialIndex)
 
 %%%%Calculated weighted phase lag index, Averaged Coherence, PSD across trial based different
 %%%%TrialIndex Needed.
@@ -10,33 +10,13 @@ function Data=crossspec_NonEqualTriL_TrialIndex(TrialSpec,TrialIndex)
 %%%%TrialSpec.Syy is power spectrum 3D matrix, Trial x Frequency x Timewindow.
 %%%%TrialSpec.options is parameters.
 
-%%%%TrialIndex is Trial Index included for averaing the results.
 
 
-if isempty(TrialIndex)
-   Data.Pxx=[];
-   Data.Pyy=[];
-   Data.Pxy=[];
-   Data.Cxy=[];
-   Data.Fre=[];
-   Data.wpli=[];
-   return
-end
+TTPxx=TrialSpec.Sxx;
+TTPyy=TrialSpec.Syy;
+TTPxy=TrialSpec.Sxy;
 
-
-% ns=size(TPxy);
-
-TPxx=TrialSpec.Sxx(TrialIndex);
-TPyy=TrialSpec.Syy(TrialIndex);
-TPxy=TrialSpec.Sxy(TrialIndex);
-
-esttype='mscohere';
-
-for itrial=1:length(TrialIndex)
-[TTPxx{itrial},f,xunits] = computepsd(squeeze(TPxx{itrial}),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
-[TTPyy{itrial},f,xunits] = computepsd(squeeze(TPyy{itrial}),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
-[TTPxy{itrial},f,xunits] = computepsd(squeeze(TPxy{itrial}),TrialSpec.w,TrialSpec.options.range,TrialSpec.options.nfft,TrialSpec.options.Fs,esttype);
-end
+% % ns=size(TPxy);
 
 [wpli1,wpli2,wpli3]=cross3DSpec2wpli1D(TTPxy);
 
@@ -59,23 +39,29 @@ Data.Pxy=Data.Pxy/length(TrialIndex);
 end
 
 
+[wpli1,wpli2,wpli3]=(cross3DSpec2wpli1D(TTPxy));
+
 
 Data.Cxy = (abs(Data.Pxy).^2)./(Data.Pxx.*Data.Pyy); % Cxy
+% Data.wpli=wpli;
+Data.Fre=TrialSpec.Fre;
 Data.wpli1=wpli1;
 Data.wpli2=wpli2;
 Data.wpli3=wpli3;
 
-Data.Fre=f;
 
 
+function [wpli1,wpli2 wpli3]=cross3DSpec2wpli1D(inputCrossSpec)
 
-function [wpli1 wpli2 wpli3]=cross3DSpec2wpli1D(inputCrossSpec)
-
+%%%%%%%inputCrossSpec is cross-spectrum, 3D matrix, Trial x Frequency x Timewindow.
+% %   inputdataRaw    = imag(inputCrossSpec);          % make everything imaginary
+% %   siz = [size(inputdataRaw) 1];
+% % 
+% %   n = siz(1);
 %%%%%%%inputCrossSpec is cross-spectrum, nTrial cell variable, each trial is a 2D matrix, Frequency x Timewindow.
   for itrial=1:length(inputCrossSpec)
 
       inputdata    = imag(inputCrossSpec{itrial});          % make everything imaginary
-
 
       if itrial==1
       siz = [size(inputdata)];
@@ -94,9 +80,8 @@ function [wpli1 wpli2 wpli3]=cross3DSpec2wpli1D(inputCrossSpec)
       end
 
   end
-    wpli1 = outsum./outsumW; % do the pairwise thing in a handy way
     wpli1  = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
-
+    wpli1 = outsum./outsumW; % do the pairwise thing in a handy way
 %   %%%%%%%inputCrossSpec is cross-spectrum, nTrial cell variable, each trial is a 2D matrix, Frequency x Timewindow.
   for itrial=1:length(inputCrossSpec)
       inputdata    = imag(inputCrossSpec{itrial});          % make everything imaginary
@@ -131,10 +116,10 @@ function [wpli1 wpli2 wpli3]=cross3DSpec2wpli1D(inputCrossSpec)
 %     if debias
     outssq   = nansum(meanPxy.^2,length(siz));
     wpli3  = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
-    wpli3  = outsum./outsumW; % do the pairwise thing in a handy way
+%     wpli3  = outsum./outsumW; % do the pairwise thing in a handy
 
-% %   wpli3=nanmean(wpli2,2);
 
-%   %     wpli     = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
-% %     wpli     = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
-%     wpli     = outsum./outsumW; % do the pairwise thing in a handy way
+
+  
+
+

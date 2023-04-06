@@ -102,6 +102,8 @@ end
 % [Sxy(i,:),Sxx(i,:),Syy(i,:),w,options] = welchCohLuTrial({Temp1(:),Temp2(:)},window,noverlap,nfft,Fs);
 
 end
+ValidIndex(ValidIndex==0)=[];
+
 % Sxy=Sxy/numTrial;
 % Sxx=Sxx/numTrial;
 % Syy=Syy/numTrial;
