@@ -40,7 +40,6 @@ end
 
 [wpli1,wpli2,wpli3]=cross3DSpec2wpli1D(TTPxy);
 
-if length(TrialIndex)>1
    for iTrial=1:length(TTPxx) 
        if iTrial==1
           Data.Pxx=nanmean(TTPxx{iTrial},2);
@@ -52,11 +51,7 @@ if length(TrialIndex)>1
           Data.Pxy=Data.Pxy+nanmean(TTPxy{iTrial},2);
        end
    end
-Data.Pxx=Data.Pxx/length(TrialIndex);
-Data.Pyy=Data.Pyy/length(TrialIndex);
-Data.Pxy=Data.Pxy/length(TrialIndex);
 
-end
 
 
 
@@ -94,7 +89,7 @@ function [wpli1 wpli2 wpli3]=cross3DSpec2wpli1D(inputCrossSpec)
       end
 
   end
-    wpli1 = outsum./outsumW; % do the pairwise thing in a handy way
+%     wpli1 = outsum./outsumW; % do the pairwise thing in a handy way
     wpli1  = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
 
 %   %%%%%%%inputCrossSpec is cross-spectrum, nTrial cell variable, each trial is a 2D matrix, Frequency x Timewindow.

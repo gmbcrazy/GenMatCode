@@ -26,7 +26,7 @@ if Param.statisP==1
       Outstats=RateHist_Stats(RateAll,Param);
    end
 Ytick=Param.Ytick;
-Ystep=(max(Ytick)-min(Ytick))/20;
+Ystep=(max(Ytick)-min(Ytick))/40;
 hold on;
 if strcmp(Param.SigPlot,'Anova')
    if isfield(Param,'Crit_p')
@@ -55,7 +55,7 @@ if strcmp(Param.SigPlot,'Anova')
 % % %           end
 % %       end
       TempXStep=mean(diff(X));
-      barplotLu(X-TempXStep/2,max(Ytick)-Ystep,TempXStep,Ystep/2,colorShip(colorPvalueI,:),1)
+      barplotLu(X-TempXStep/2,max(Ytick)-Ystep,TempXStep,Ystep,colorShip(colorPvalueI,:),1)
    end
 elseif strcmp(Param.SigPlot,'Ttest')
     if isfield(Param,'Crit_p')
@@ -158,7 +158,7 @@ end
 
 
 
-
+%% 
 function stats=ErrorBarPlotLU(x,y_mean,y_errorbar,barColor,PlotMode,Marker,varargin)
 
 %%%%%%PlotMode=1; barPlot

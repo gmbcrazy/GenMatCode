@@ -29,7 +29,7 @@ The following objects are masked from 'package:base':
 
     getOption, isOpen
 
-> Temp1=readMat("C:/Users/lzhang481/ToolboxAndScript/my program/normal/Workingtemp/R_MixAnova3F2W1B.mat");
+> Temp1=readMat("C:/Users/lzhang481/ToolboxAndScript/GenMatCode/Statistics/ANOVAandMixEffect/R/R_MixAnova3F2W1B.mat");
 > DataAnova=unlist(Temp1$Data);
 > g1=factor(unlist(Temp1$Dependent[,1]));
 > g2=factor(unlist(Temp1$Dependent[,2]));
@@ -42,8 +42,8 @@ The following objects are masked from 'package:base':
 Warning message:
 In aov(rt ~ g1 * g2 * g3 + Error(gS/(g1 * g2)), data = Data.Anova) :
   Error() model is singular
-> sink("C:/Users/lzhang481/ToolboxAndScript/my program/normal/Workingtemp/MixAnova3F2W1B.txt");print(A);sink(); 
+> sink("C:/Users/lzhang481/ToolboxAndScript/GenMatCode/Statistics/ANOVAandMixEffect/R/MixAnova3F2W1B.txt");print(A);sink(); 
 > 
 > proc.time()
-   user  system elapsed 
-   0.15    0.09    0.25 
+    user   system  elapsed 
+13687.51     3.57 13700.70 

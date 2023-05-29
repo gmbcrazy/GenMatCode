@@ -159,7 +159,7 @@ GName=GroupPair.GroupName;
     for i=1:length(x)
     
 %     boxplot(data{i}(:),x(i)+0.1,'notch','off','color',colorPlot(i,:),'symbol','','boxstyle','filled','positions',x(i)+0.1);hold on;
-    boxplot(data{i}(:),x(i)+0.3,'notch','off','color',colorPlot(i,:),'symbol','','boxstyle','outline','positions',x(i)+0.3);hold on;
+    boxplot(data{i}(:),x(i)+0.1,'notch','off','color',colorPlot(i,:),'symbol','','boxstyle','filled','positions',x(i)+0.1);hold on;
 
 set(gca,'tickdir','out','FontUnits','points','xtick',[],'yticklabel',[],'xlim',[min(x)-0.7 max(x)+0.7],'xticklabel',{'' '' '' '' ''},'xtick',x,'box','off','fontsize',12,'color',[1 1 1],'xcolor',[0 0 0],'ycolor',[0 0 0],'linewidth',0.5);
 
