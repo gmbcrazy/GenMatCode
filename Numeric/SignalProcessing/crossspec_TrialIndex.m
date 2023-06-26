@@ -79,7 +79,7 @@ function wpli=cross3DSpec2wpli1D(inputCrossSpec)
       outssq   = nansum(inputdata.^2,length(siz)-1);
       wpli     = (outsum.^2 - outssq)./(outsumW.^2 - outssq); % do the pairwise thing in a handy way
 %       wpli     = outsum./outsumW; % estimator of E(Im(X))/E(|Im(X)|)
-    wpli = reshape(wpli,siz(2:end));
+%     wpli = reshape(wpli,siz(2:end));
   elseif n>1
     outsum   = nansum(nansum(inputdata,1),length(siz)-1);      % compute the sum; this is 1 x size(2:end)
     outsumW  = nansum(nansum(abs(inputdata),1),length(siz)-1); % normalization of the WPLI
