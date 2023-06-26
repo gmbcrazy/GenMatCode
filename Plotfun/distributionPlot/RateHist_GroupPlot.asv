@@ -80,10 +80,10 @@ elseif strcmp(Param.SigPlot,'Ttest')
         if size(Outstats.ttestP.Ppair,1)~=1
 
            if sum(Sig)>0
-              plot(X(Sig==(length(RateAll)-1)),zeros(size(X(Sig==(length(RateAll)-1))))+max(Ytick)-(iGroup-1)*Ystep,'.','color',sigColor,'markersize',6);hold on;
+              plot(X(Sig==(length(RateAll)-1)),zeros(size(X(Sig==(length(RateAll)-1))))+max(Ytick)-(iGroup+1)*Ystep,'.','color',sigColor,'markersize',6);hold on;
            end
         else
-        plot(X(Sig==1),zeros(size(X(Sig==1)))+max(Ytick)-(iGroup-1)*Ystep,'.','color',sigColor,'markersize',6);hold on;
+        plot(X(Sig==1),zeros(size(X(Sig==1)))+max(Ytick)-(iGroup+1)*Ystep,'.','color',sigColor,'markersize',6);hold on;
  
         
         end
@@ -113,10 +113,10 @@ elseif strcmp(Param.SigPlot,'Ranktest')
         if size(Outstats.ttestP.Ppair,1)~=1
 
            if sum(Sig)>0
-              plot(X(Sig==(length(RateAll)-1)),zeros(size(X(Sig==(length(RateAll)-1))))+max(Ytick)-(iGroup-1)*Ystep,'.','color',sigColor,'markersize',6);hold on;
+              plot(X(Sig==(length(RateAll)-1)),zeros(size(X(Sig==(length(RateAll)-1))))+max(Ytick)-(iGroup+1)*Ystep,'.','color',sigColor,'markersize',6);hold on;
            end
         else
-        plot(X(Sig==1),zeros(size(X(Sig==1)))+max(Ytick)-(iGroup-1)*Ystep,'.','color',sigColor,'markersize',6);hold on;
+        plot(X(Sig==1),zeros(size(X(Sig==1)))+max(Ytick)-(iGroup)*Ystep,'.','color',sigColor,'markersize',6);hold on;
  
         
         end
@@ -583,13 +583,13 @@ else
 
    
    
-         TempText='mean ± sd';
+         TempText='mean Â± sd';
 
          ShowTemp(end+1,1:length(TempText))=TempText;
 
       for ii=1:length(y_mean)
 
-          TempText=['Group' num2str(ii) ' ' num2str(nanmean(y_mean{ii}(:))) ' ± ' num2str(nanstd(y_mean{ii}(:))) ' n=' num2str(length(y_mean{ii}))];
+          TempText=['Group' num2str(ii) ' ' num2str(nanmean(y_mean{ii}(:))) ' Â± ' num2str(nanstd(y_mean{ii}(:))) ' n=' num2str(length(y_mean{ii}))];
           ShowTemp(end+1,1:length(TempText))=TempText;
 
       end
