@@ -1,4 +1,4 @@
-function [s] = fieldmerge(s1,field);
+function [s] = fieldmerge(s1,field)
 
 
 s=[];

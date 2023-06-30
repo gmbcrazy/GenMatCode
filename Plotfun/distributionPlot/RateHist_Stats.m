@@ -1,7 +1,7 @@
 function Outstats=RateHist_Stats(RateAll,Param)
 
 %%%%%%%RateAll is cell variable, RateAll{1} is a matrix, meansurements x time.
-Rfolder = 'C:\Users\lzhang481\ToolboxAndScript\my program\normal\Workingtemp\';
+Rfolder = 'C:\Users\lzhang481\ToolboxAndScript\GenMatCode\Statistics\ANOVAandMixEffect\R\';
 % Param.Paired=1;
 % Param.RepeatAnova=1; %%objects was repeated measured across time and
 % group.   -> thus Param.TimeRepeatAnova==1&&Param.GroupRepeatAnova==1
