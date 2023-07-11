@@ -258,8 +258,12 @@ end
 
 if (~iscell(y_mean))&&(~isstruct(y_mean))
 
+if PlotMode==0
+   
+   plot(x,y_mean,'color',barColor,'linestyle','-','linewidth',1);hold on
 
-if PlotMode==1
+
+elseif PlotMode==1
     for i=1:length(x)
         b=bar(x(i),y_mean(i),0.8,'facecolor',barColor(i,:),'Edgecolor',barColor(i,:));hold on;
         plot([x(i) x(i)],y_mean(i)+[-y_errorbar(i) y_errorbar(i)],'color',barColor(i,:));
